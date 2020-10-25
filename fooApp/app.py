@@ -97,7 +97,7 @@ def product_edit(product_id):
         abort(404)
     form = ProductForm(request.form, data=product)
     if request.method == 'POST' and form.validate():
-        mongo.db.products.replace_one(product, form)
+        mongo.db.products.replace_one(product, form.data)
         # Success. Send the user back to the detail view.
         return redirect(url_for('products_list'))
     return render_template('product/edit.html', form=form)
@@ -108,7 +108,7 @@ def product_create():
   """Provide HTML form to create a new product."""
   form = ProductForm(request.form)
   if request.method == 'POST' and form.validate():
-    mongo.db.products.insert_one(form)
+    mongo.db.products.insert_one(form.data)
     #mongo.db.products.insert_one(form)
     # Success. Send user back to full product list.
     return redirect(url_for('products_list'))

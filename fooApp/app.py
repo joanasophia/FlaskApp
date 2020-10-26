@@ -15,7 +15,8 @@ from models import User
 
 app = Flask(__name__, static_url_path='/static')
 app.config['MONGO_DBNAME'] = 'foodb'
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/foodb'
+#app.config['MONGO_URI'] = 'mongodb://localhost:27017/foodb'
+app.config['MONGO_URI'] =  'mongodb+srv://joanasophia:<KEY4bcn>@cluster0.kavfq.gcp.mongodb.net/foodb?retryWrites=true&w=majority'
 app.config['SECRET_KEY'] = 'tzU78jowks458PKs' 
 app.config['SESSION_PROTECTION'] = 'strong'
 login_manager = LoginManager()

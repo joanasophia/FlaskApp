@@ -97,7 +97,7 @@ def product_edit(product_id):
         abort(404)
     form = ProductForm(request.form, data=product)
     if request.method == 'POST' and form.validate():
-        mongo.db.products.replace_one(product, form.data)pi
+        mongo.db.products.replace_one(product, form.data)
         # Success. Send the user back to the detail view.
         return redirect(url_for('products_list'))
     return render_template('product/edit.html', form=form)

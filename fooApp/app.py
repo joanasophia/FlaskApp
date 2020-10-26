@@ -24,7 +24,7 @@ login_manager.login_view = 'login'
 
 mongo = PyMongo(app)
 
-#LOG = logging.create_logger(app)
+LOG = logging.create_logger(app)
 
 
 
@@ -97,7 +97,7 @@ def product_edit(product_id):
         abort(404)
     form = ProductForm(request.form, data=product)
     if request.method == 'POST' and form.validate():
-        mongo.db.products.replace_one(product, form.data)
+        mongo.db.products.replace_one(product, form.data)pi
         # Success. Send the user back to the detail view.
         return redirect(url_for('products_list'))
     return render_template('product/edit.html', form=form)
@@ -129,18 +129,20 @@ def product_delete(product_id):
   return jsonify({'status': 'OK', 'url': url_for('products_list')})
 
 
-# @app.before_request
-# def callme_before_every_request():
-#   # Demo only: the before_request hook.
-#   #app.logger.debug(dump_request_detail(request))
-#   LOG.debug(dump_request_detail(request))
+@app.before_request
+def callme_before_every_request():
+  # Demo only: the before_request hook.
+  #app.logger.debug(dump_request_detail(request))
+  LOG.debug(dump_request_detail(request))
 
-# @app.after_request
-# def callme_after_every_response(response):
-#   # Demo only: the after_request hook.
-#   #app.logger.debug('# After Request #\n' + repr(response))
-#   LOG.debug('# After Request #\n' + repr(response)) # above was not possible
-#   return response
+@app.after_request
+def callme_after_every_response(response):
+  # Demo only: the after_request hook.
+  #app.logger.debug('# After Request #\n' + repr(response))
+  LOG.debug('# After Request #\n' + repr(response)) # above was not possible
+  return response
+
+
 
 # error handler
 @app.errorhandler(404)
@@ -150,6 +152,42 @@ def error_not_found(error):
 @app.errorhandler(bson.errors.InvalidId)
 def error_not_found_invalid(error):
   return render_template('error/not_found.html'), 404 
+
+@app.route('/string/')
+def return_string():
+  dump = dump_request_detail(request)
+  return 'Hello, world!'
+
+@app.route('/object/')
+def return_object():
+  dump = dump_request_detail(request)
+  headers = {'Content-Type': 'text/plain'}
+  return make_response(Response('Hello, world! \n' + dump, status=200,
+    headers=headers))
+
+@app.route('/tuple/<path:resource>')
+def return_tuple(resource):
+  dump = dump_request_detail(request)
+  return 'Hello, world! \n' + dump, 200, {'Content-Type':
+    'text/plain'}
+
+
+def dump_request_detail(request):
+  request_detail = """
+## Request INFO ##
+request.endpoint: {request.endpoint}
+request.method: {request.method}
+request.view_args: {request.view_args}
+request.args: {request.args}
+request.form: {request.form}
+request.user_agent: {request.user_agent}
+request.files: {request.files}
+request.is_xhr: {request.is_xhr}
+
+## request.headers ##
+{request.headers}
+  """.format(request=request).strip()
+  return request_detail
 
 if __name__ == '__main__':
     app.run()

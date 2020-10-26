@@ -1,4 +1,3 @@
-Werkzeug==0.16.1
 Flask
 Flask-Login
 Flask-Script

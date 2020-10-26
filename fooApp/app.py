@@ -129,21 +129,6 @@ def product_delete(product_id):
   return jsonify({'status': 'OK', 'url': url_for('products_list')})
 
 
-@app.before_request
-def callme_before_every_request():
-  # Demo only: the before_request hook.
-  #app.logger.debug(dump_request_detail(request))
-  LOG.debug(dump_request_detail(request))
-
-@app.after_request
-def callme_after_every_response(response):
-  # Demo only: the after_request hook.
-  #app.logger.debug('# After Request #\n' + repr(response))
-  LOG.debug('# After Request #\n' + repr(response)) # above was not possible
-  return response
-
-
-
 # error handler
 @app.errorhandler(404)
 def error_not_found(error):
